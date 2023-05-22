@@ -3,12 +3,43 @@
 #include <iomanip>
 #include <algorithm>
 #include <fstream>
-#include <sstream>
-#include <array>
 
 int
 get_feet_of_ribbon_needed(int length, int width, int height) {
-  return 0;
+  // Calculate the shortest distance
+  std::vector<int> dimensions{ length, width, height };
+
+  auto dimensions_it{ std::min_element(std::begin(dimensions), std::end(dimensions)) };
+
+  int shortest_dimension{ *dimensions_it };
+
+  // Calculate the next shortest distance
+  std::vector<int> dimensions_without_shortest;
+
+  bool did_already_remove_shortest_dimension{ false }; // Necessary because if we have 1x1x4 we don't want to remove both 1's
+
+  std::copy_if(dimensions.begin(), dimensions.end(), std::back_inserter(dimensions_without_shortest), [shortest_dimension, &did_already_remove_shortest_dimension](int dimension) {
+    if (dimension != shortest_dimension) return true;
+    if (did_already_remove_shortest_dimension) return true;
+
+    did_already_remove_shortest_dimension = true;
+    return false;
+  });
+
+  auto dimensions_without_shortest_it{ std::min_element(std::begin(dimensions_without_shortest), std::end(dimensions_without_shortest)) };
+
+  int next_shortest_dimension{ *dimensions_without_shortest_it };
+
+  std::cout << shortest_dimension << " " << next_shortest_dimension << std::endl;
+
+  // Calculate perimeter of face with shortest perimeter
+  int perimeter_of_face_with_shortest_perimeter{ shortest_dimension * 2 + next_shortest_dimension * 2 };
+
+  // Calculate cubic volume of the box
+  int cubic_volume{ length * width * height };
+
+  // Ribbon needed = perimeter of face with shortest perimeter + cubic volume of box
+  return perimeter_of_face_with_shortest_perimeter + cubic_volume;
 }
 
 bool
