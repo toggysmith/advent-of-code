@@ -1,15 +1,31 @@
 #include <iostream>
 #include <vector>
 #include <iomanip>
+#include <algorithm>
 
-int
+double
 get_square_feet_of_wrapping_paper_needed(int length, int width, int height) {
-  return 0;
+  // The box is made up of three pairs of sides. We calculate the combined area for each pair.
+  int pair_1_area{ 2 * length * width };
+  int pair_2_area{ 2 * width * height };
+  int pair_3_area{ 2 * height * length };
+
+  // We then calculate the total surface area of the box.
+  int total_surface_area{ pair_1_area + pair_2_area + pair_3_area };
+
+  // We work out which side pair is smallest.
+  int area_of_smallest_side_pair{ std::min({pair_1_area, pair_2_area, pair_3_area}) };
+
+  // We can then work out the area of the smallest side by dividing the pair's area in two.
+  double area_of_smallest_side{ area_of_smallest_side_pair / 2.0 };
+
+  // Total wrapping paper needed = surface area + area of smallest side
+  return total_surface_area + area_of_smallest_side;
 }
 
 bool
 run_test(int length, int width, int height, int expected_square_feet_of_wrapping_paper_needed) {
-  int actual_square_feet_of_wrapping_paper_needed{
+  double actual_square_feet_of_wrapping_paper_needed{
     get_square_feet_of_wrapping_paper_needed(length, width, height)
   };
   bool does_match{ actual_square_feet_of_wrapping_paper_needed == expected_square_feet_of_wrapping_paper_needed };
