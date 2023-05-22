@@ -3,10 +3,25 @@
 #include <string>
 #include <vector>
 #include <iomanip>
+#include <fstream>
+#include <sstream>
 
 int
 get_floor(std::string parentheses) {
-  return 0;
+  int floor{ 0 };
+
+  for (const auto parenthesis : parentheses) {
+    switch (parenthesis) {
+      case '(':
+        floor++;
+        break;
+      case ')':
+        floor--;
+        break;
+    }
+  }
+
+  return floor;
 }
 
 bool
@@ -23,7 +38,7 @@ run_test(std::string parentheses, int expected_floor) {
   return does_match;
 }
 
-void
+bool
 run_tests() {
   // Table headings
   std::cout << std::left
@@ -53,7 +68,7 @@ run_tests() {
   };
 
   // Say whether any of the tests failed
-  const auto failed_test{ std::find(test_results.begin(), test_results.end(), true) };
+  const auto failed_test{ std::find(test_results.begin(), test_results.end(), 0) };
 
   bool does_failed_test_exist{ failed_test != test_results.end() };
 
@@ -62,11 +77,32 @@ run_tests() {
   } else {
     std::cout << "\nTests passed.\n";
   }
+
+  return !does_failed_test_exist;
 }
 
 int
 main() {
-  run_tests();
+  // Run all the tests first before trying it on the real thing
+  bool did_tests_pass{ run_tests() };
+
+  if (!did_tests_pass) return EXIT_SUCCESS;
+
+  // Read in the input file
+  std::ifstream input_file;
+
+  input_file.open("puzzle-input", std::ios_base::in);
+
+  std::stringstream file_buffer;
+
+  file_buffer << input_file.rdbuf();
+
+  std::string file_contents{ file_buffer.str() };
+
+  // Pass the input into the function and print the output
+  int floor{ get_floor(file_contents) };
+
+  std::cout << "\nThe current floor is " << floor << '\n';
 
   return EXIT_SUCCESS;
 }
