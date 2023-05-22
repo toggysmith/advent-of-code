@@ -2,6 +2,9 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+#include <fstream>
+#include <sstream>
+#include <array>
 
 double
 get_square_feet_of_wrapping_paper_needed(int length, int width, int height) {
@@ -75,6 +78,36 @@ run_tests() {
 int
 main() {
   bool did_tests_pass{ run_tests() };
+
+  if (!did_tests_pass) return EXIT_SUCCESS;
+
+  // Read the input file line-by-line.
+  std::ifstream input_file;
+
+  input_file.open("puzzle-input", std::ios_base::in);
+
+  std::string line;
+
+  double total_area{ 0.0 };
+
+  while (input_file >> line) {
+    std::array<int, 3> dimensions;
+
+    std::stringstream line_stream{ line };
+    int dimensions_added{ 0 };
+    std::string dimension;
+
+    while (getline(line_stream, dimension, 'x')) {
+      dimensions[dimensions_added++] = std::stoi(dimension);
+    }
+
+    total_area += get_square_feet_of_wrapping_paper_needed(dimensions[0], dimensions[1], dimensions[2]);
+  }
+
+  input_file.close();
+
+  // Show the total amount needed
+  std::cout << "\nThe total amount of wrapping paper needed is " << std::fixed << total_area << " square feet.\n";
 
   return EXIT_SUCCESS;
 }
