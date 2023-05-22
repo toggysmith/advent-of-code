@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <algorithm>
 #include <fstream>
+#include <array>
+#include <sstream>
 
 int
 get_feet_of_ribbon_needed(int length, int width, int height) {
@@ -29,8 +31,6 @@ get_feet_of_ribbon_needed(int length, int width, int height) {
   auto dimensions_without_shortest_it{ std::min_element(std::begin(dimensions_without_shortest), std::end(dimensions_without_shortest)) };
 
   int next_shortest_dimension{ *dimensions_without_shortest_it };
-
-  std::cout << shortest_dimension << " " << next_shortest_dimension << std::endl;
 
   // Calculate perimeter of face with shortest perimeter
   int perimeter_of_face_with_shortest_perimeter{ shortest_dimension * 2 + next_shortest_dimension * 2 };
@@ -96,6 +96,34 @@ main() {
   bool did_tests_pass{ run_tests() };
 
   if (!did_tests_pass) return EXIT_SUCCESS;
+
+  // Read the input file line-by-line.
+  std::ifstream input_file;
+
+  input_file.open("puzzle-input", std::ios_base::in);
+
+  std::string line;
+
+  double total_feet{ 0.0 };
+
+  while (input_file >> line) {
+    std::array<int, 3> dimensions;
+
+    std::stringstream line_stream{ line };
+    int dimensions_added{ 0 };
+    std::string dimension;
+
+    while (getline(line_stream, dimension, 'x')) {
+      dimensions[dimensions_added++] = std::stoi(dimension);
+    }
+
+    total_feet += get_feet_of_ribbon_needed(dimensions[0], dimensions[1], dimensions[2]);
+  }
+
+  input_file.close();
+
+  // Show the total amount needed
+  std::cout << "\nThe total amount of ribbon needed is " << std::fixed << total_feet << " feet.\n";
 
   return EXIT_SUCCESS;
 }
