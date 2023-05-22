@@ -80,5 +80,21 @@ main() {
 
   if (!did_tests_pass) return EXIT_SUCCESS;
 
+  // Read in the input file
+  std::ifstream input_file;
+
+  input_file.open("puzzle-input", std::ios_base::in);
+
+  std::stringstream file_buffer;
+
+  file_buffer << input_file.rdbuf();
+
+  std::string file_contents{ file_buffer.str() };
+
+  // Pass the input into the function and print the output
+  int floor{ get_parenthesis_which_enters_basement(file_contents) };
+
+  std::cout << "\nThe parenthesis which enters the basement is " << floor << '\n';
+
   return EXIT_SUCCESS;
 }
