@@ -8,6 +8,27 @@
 
 int
 get_parenthesis_which_enters_basement(std::string parentheses) {
+  int floor{ 0 };
+
+  for (size_t i{ 0 }; i < parentheses.size(); i++) {
+    const auto parenthesis{ parentheses[i] };
+
+    switch (parenthesis) {
+      case '(':
+        floor++;
+        break;
+      case ')':
+        floor--;
+        break;
+    }
+
+    bool is_basement_floor = floor == -1;
+
+    if (is_basement_floor) {
+      return i + 1;
+    }
+  }
+
   return 0;
 }
 
