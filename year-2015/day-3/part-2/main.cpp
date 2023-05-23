@@ -9,6 +9,10 @@ int
 get_number_of_houses_with_a_present(const std::string_view movements) {
   struct Location {
     int x, y;
+
+    bool operator==(const Location& other_location) const {
+      return this->x == other_location.x && this->y == other_location.y;
+    }
   };
 
   struct VisitedLocations {
@@ -33,32 +37,63 @@ get_number_of_houses_with_a_present(const std::string_view movements) {
     }
   };
 
-  VisitedLocations visited_locations;
+  std::string santa_movements;
+  std::string robo_santa_movements;
 
-  Location current_location{ 0, 0 };
-
-  for (const auto movement : movements) {
-    switch (movement) {
-      case '<':
-        current_location.x--;
-        visited_locations.add(current_location);
-        break;
-      case '>':
-        current_location.x++;
-        visited_locations.add(current_location);
-        break;
-      case '^':
-        current_location.y--;
-        visited_locations.add(current_location);
-        break;
-      case 'v':
-        current_location.y++;
-        visited_locations.add(current_location);
-        break;
-    }
+  {
+    int index{ 0 };
+    std::copy_if(movements.begin(), movements.end(), std::back_inserter(robo_santa_movements), [index](auto _) mutable {
+      return index++ % 2;
+    });
   }
 
-  return visited_locations.size();
+  {
+    int index{ 0 };
+    std::copy_if(movements.begin(), movements.end(), std::back_inserter(santa_movements), [index](auto _) mutable {
+      return !(index++ % 2);
+    });
+  }
+
+  const auto get_visited_locations = [](std::string_view movements) {
+    Location current_location{ 0, 0 };
+    VisitedLocations visited_locations;
+
+    for (const auto movement : movements) {
+      switch (movement) {
+        case '<':
+          current_location.x--;
+          visited_locations.add(current_location);
+          break;
+        case '>':
+          current_location.x++;
+          visited_locations.add(current_location);
+          break;
+        case '^':
+          current_location.y--;
+          visited_locations.add(current_location);
+          break;
+        case 'v':
+          current_location.y++;
+          visited_locations.add(current_location);
+          break;
+      }
+    }
+    
+    return visited_locations;
+  };
+
+  VisitedLocations combined_visited_locations_without_duplicates{ get_visited_locations(santa_movements) };
+  VisitedLocations robo_santa_visited_locations{ get_visited_locations(robo_santa_movements) };
+
+  std::copy_if(robo_santa_visited_locations.visited_locations.begin(), robo_santa_visited_locations.visited_locations.end(), std::back_inserter(combined_visited_locations_without_duplicates.visited_locations), [combined_visited_locations_without_duplicates](Location location) {
+    const auto it{
+      std::find(combined_visited_locations_without_duplicates.visited_locations.begin(), combined_visited_locations_without_duplicates.visited_locations.end(), location)
+    };
+
+    return it == combined_visited_locations_without_duplicates.visited_locations.end();
+  });
+
+  return combined_visited_locations_without_duplicates.size();
 }
 
 bool
@@ -88,9 +123,9 @@ run_tests() {
 
   // Gather test results
   std::vector<bool> test_results = {
-    run_test(">", 2),
-    run_test("^>v<", 4),
-    run_test("^v^v^v^v^v", 2),
+    run_test("^v", 3),
+    run_test("^>v<", 3),
+    run_test("^v^v^v^v^v", 11),
   };
 
   // Say whether any of the tests failed
