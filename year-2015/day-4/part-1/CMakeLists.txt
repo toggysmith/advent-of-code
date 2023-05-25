@@ -3,4 +3,4 @@ cmake_minimum_required(VERSION 3.2)
 project(day-4 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(out main.cpp)
+add_executable(out main.cpp dynamic_bitset.cpp)
