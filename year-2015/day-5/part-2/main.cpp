@@ -1,46 +1,42 @@
+#include <algorithm>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
+#include <unordered_map>
 #include <vector>
 
 bool is_naughty(std::string_view input) {
-  // 1. Check for naughty substrings.
-  for (int i = 0; i < input.size() - 1; i++) {
-    const std::string_view substring{input.substr(i, 2)};
+  bool repeating_letter{false};
+  bool duplicate_pair{false};
 
-    if (substring == "ab" || substring == "cd" || substring == "pq" ||
-        substring == "xy") {
-      return true;
-    }
-  }
+  std::unordered_map<std::string, int> pairs;
 
-  // 2. Check for letters appearing twice and at least three vowels.
-  char previous_character{
-      'A'}; // Set it to an uppercase because this can't occur in the input.
-  const std::vector<char> vowels{'a', 'e', 'i', 'o', 'u'};
-  int number_of_vowels_encountered{0};
-
-  bool does_a_letter_appear_twice{false};
-
-  for (const auto character : input) {
-    // 2.1. Don't bother checking for characters appearing twice if we already
-    // found one.
-    if (!does_a_letter_appear_twice) {
-      does_a_letter_appear_twice = previous_character == character;
-      previous_character = character;
+  for (size_t i = 0; i < input.size(); i++) {
+    // Check if the string contains at least one letter which repeats with
+    // exactly one letter between them.
+    if (!repeating_letter && i != 0 && input[i] == input[i - 2]) {
+      repeating_letter = true;
     }
 
-    // 2.2. Check for vowels.
-    if (number_of_vowels_encountered != 3) {
-      if (std::find(vowels.begin(), vowels.end(), character) != vowels.end()) {
-        number_of_vowels_encountered++;
+    // Check if the string contains a pair of two letters that appears twice
+    // without overlapping.
+    if (!duplicate_pair) {
+      const std::string pair{input.substr(i, 2)};
+
+      try {
+        const int index_of_other_pair{pairs.at(pair)};
+
+        if (i - index_of_other_pair > 1) {
+          duplicate_pair = true;
+        }
+      } catch (std::out_of_range e) {
+        pairs[pair] = i;
       }
     }
   }
 
-  // 3. Return whether both conditions are met.
-  return !(does_a_letter_appear_twice && number_of_vowels_encountered >= 3);
+  return !(repeating_letter && duplicate_pair);
 }
 
 bool run_test(const std::string &input_string, bool expected_is_naughty) {
@@ -62,9 +58,10 @@ bool run_tests() {
 
   // Gather test results
   std::vector<bool> test_results = {
-      run_test("ugknbfddgicrmopn", false), run_test("aaa", false),
-      run_test("jchzalrnumimnmhp", true),  run_test("haegwjzuvuyypxyu", true),
-      run_test("dvszwmarrgswjxmb", true),
+      run_test("qjhvhtzxzqqjkmpb", false),
+      run_test("xxyxx", false),
+      run_test("uurcxstgmygtbstg", true),
+      run_test("ieodomkazucvgmuy", true),
   };
 
   // Say whether any of the tests failed
