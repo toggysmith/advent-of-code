@@ -15,7 +15,7 @@ BreakBeforeBraces: Allman
 BreakBeforeTernaryOperators: 'true'
 BreakConstructorInitializers: AfterColon
 ColumnLimit: '60'
-Cpp11BracedListStyle: 'true'
+Cpp11BracedListStyle: 'false'
 DerivePointerAlignment: 'false'
 IndentCaseLabels: 'true'
 IndentWidth: '2'
@@ -26,7 +26,7 @@ PointerAlignment: Left
 SortIncludes: 'true'
 SortUsingDeclarations: 'true'
 SpaceBeforeAssignmentOperators: 'true'
-SpaceBeforeCpp11BracedList: 'true'
+SpaceBeforeCpp11BracedList: 'false'
 SpaceBeforeCtorInitializerColon: 'true'
 Standard: Cpp11
 TabWidth: '2'
