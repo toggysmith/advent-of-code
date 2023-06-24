@@ -1,0 +1,35 @@
+﻿---
+BasedOnStyle: LLVM
+AllowAllArgumentsOnNextLine: 'false'
+AllowAllParametersOfDeclarationOnNextLine: 'false'
+AllowShortBlocksOnASingleLine: 'true'
+AllowShortCaseLabelsOnASingleLine: 'true'
+AllowShortFunctionsOnASingleLine: All
+AllowShortIfStatementsOnASingleLine: Always
+AllowShortLambdasOnASingleLine: All
+AlwaysBreakAfterReturnType: None
+AlwaysBreakBeforeMultilineStrings: 'false'
+BinPackArguments: 'true'
+BinPackParameters: 'true'
+BreakBeforeBraces: Allman
+BreakBeforeTernaryOperators: 'true'
+BreakConstructorInitializers: AfterColon
+ColumnLimit: '60'
+Cpp11BracedListStyle: 'true'
+DerivePointerAlignment: 'false'
+IndentCaseLabels: 'true'
+IndentWidth: '2'
+KeepEmptyLinesAtTheStartOfBlocks: 'false'
+Language: Cpp
+MaxEmptyLinesToKeep: '2'
+PointerAlignment: Left
+SortIncludes: 'true'
+SortUsingDeclarations: 'true'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeCpp11BracedList: 'true'
+SpaceBeforeCtorInitializerColon: 'true'
+Standard: Cpp11
+TabWidth: '2'
+UseTab: ForIndentation
+
+...
