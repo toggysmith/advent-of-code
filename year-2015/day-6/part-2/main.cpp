@@ -4,11 +4,11 @@
 #include <sstream>
 #include <vector>
 
-int get_no_of_lights_on(const std::vector<const std::string> actions) {
-  std::array<std::array<bool, 1000>, 1000> lights;
+int get_total_brightness(const std::vector<const std::string> actions) {
+  std::array<std::array<int, 1000>, 1000> lights;
 
   for (int i = 0; i < lights.size(); i++) {
-    lights[i].fill(false);
+    lights[i].fill(0);
   }
 
   const auto get_bounds_from_action =
@@ -46,7 +46,7 @@ int get_no_of_lights_on(const std::vector<const std::string> actions) {
           get_bounds_from_action(action.substr(8, action.size()));
       for (int i_x = x; i_x <= x + w; i_x++) {
         for (int i_y = y; i_y <= y + h; i_y++) {
-          lights[i_x][i_y] = true;
+          lights[i_x][i_y] += 1;
         }
       }
     } else if (action.substr(0, 8) == "turn off") {
@@ -54,7 +54,10 @@ int get_no_of_lights_on(const std::vector<const std::string> actions) {
           get_bounds_from_action(action.substr(9, action.size()));
       for (int i_x = x; i_x <= x + w; i_x++) {
         for (int i_y = y; i_y <= y + h; i_y++) {
-          lights[i_x][i_y] = false;
+          lights[i_x][i_y] -= 1;
+          if (lights[i_x][i_y] < 0) {
+            lights[i_x][i_y] = 0;
+          }
         }
       }
     } else {
@@ -62,21 +65,21 @@ int get_no_of_lights_on(const std::vector<const std::string> actions) {
           get_bounds_from_action(action.substr(7, action.size()));
       for (int i_x = x; i_x <= x + w; i_x++) {
         for (int i_y = y; i_y <= y + h; i_y++) {
-          lights[i_x][i_y] = !lights[i_x][i_y];
+          lights[i_x][i_y] += 2;
         }
       }
     }
   }
 
-  int number_of_lights_on = 0;
+  int total_brightness = 0;
 
   for (int x = 0; x < 1'000; x++) {
     for (int y = 0; y < 1'000; y++) {
-      number_of_lights_on += static_cast<int>(lights[x][y]);
+      total_brightness += lights[x][y];
     }
   }
 
-  return number_of_lights_on;
+  return total_brightness;
 }
 
 int main() {
@@ -93,11 +96,11 @@ int main() {
     actions.push_back(line);
   }
 
-  int no_of_lights_on{get_no_of_lights_on(actions)};
+  int total_brightness{get_total_brightness(actions)};
 
   input_file.close();
 
-  std::cout << "The number of lights on is " << no_of_lights_on << '\n';
+  std::cout << "The total brightness is " << total_brightness << '\n';
 
   return EXIT_SUCCESS;
 }
